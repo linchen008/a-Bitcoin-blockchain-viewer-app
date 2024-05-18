@@ -29,13 +29,10 @@ class NetworkEnvelope:
     @classmethod
     def decode(cls, s, net):
         """ Construct a NetworkEnvelope from BytesIO stream s on a given net """
-
-        # validate magic bytes
-        magic = s.read(4)
+        magic = s.read(4)  # validate magic bytes
         assert magic != b'', "No magic bytes; Connection was reset?"
         assert magic == MAGICS[net]
-        # decode the command
-        command = s.read(12)
+        command = s.read(12)  # decode the command
         command = command.strip(b'\x00')
         # decode and validate the payload
         payload_length = int.from_bytes(s.read(4), 'little')
@@ -67,6 +64,7 @@ class NetworkEnvelope:
         """ Stream the payload of this envelope """
         return BytesIO(self.payload)
 
+
 # -----------------------------------------------------------------------------
 # Specific types of commands and their payload encoder/decords follow
 # -----------------------------------------------------------------------------
@@ -91,6 +89,7 @@ class NetAddrStruct:
         # receiver port is 2 bytes, big endian
         out += [self.port.to_bytes(2, 'big')]
         return b''.join(out)
+
 
 @dataclass
 class VersionMessage:
@@ -153,6 +152,7 @@ class VersionMessage:
 
         return b''.join(out)
 
+
 @dataclass
 class VerAckMessage:
     """
@@ -168,6 +168,7 @@ class VerAckMessage:
 
     def encode(self):
         return b''
+
 
 @dataclass
 class PingMessage:
@@ -187,6 +188,7 @@ class PingMessage:
 
     def encode(self):
         return self.nonce
+
 
 @dataclass
 class PongMessage:

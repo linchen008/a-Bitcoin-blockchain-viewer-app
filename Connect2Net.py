@@ -1,10 +1,13 @@
 import hashlib
 import socket
-from dataclasses import dataclass
+import struct
+from dataclasses import dataclass, field
 from typing import List
 
-from Handshake import NetworkEnvelope, VersionMessage, VerAckMessage, PongMessage, PingMessage
-from Utils import encode_varint, decode_varint
+from Handshake import NetworkEnvelope, PingMessage, PongMessage, VersionMessage, VerAckMessage
+from MessageHandler import GetDataMessage, InvMessage, TxMessage, BlockMessage
+# from MessageHandler import GetDataMessage, InvMessage, TxMessage, BlockMessage
+from Utils import encode_varint, decode_varint, encode_int
 
 
 class SimpleNode:
@@ -19,6 +22,7 @@ class SimpleNode:
         # Set up the socket connection
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((resolved_ip, port))
+        print("Connected to Bitcoin node at {}:{}".format(resolved_ip, port))
         self.stream = self.socket.makefile('rb', None)
 
     def send(self, message):
@@ -29,63 +33,57 @@ class SimpleNode:
 
     def read(self):
         env = NetworkEnvelope.decode(self.stream, net=self.net)
-        if self.verbose:
-            print(f"receiving: {env}")
-        return env
-    
-    def process_message(self, env):
-            # Decode and print the message
-            if self.verbose:
-                print(f"Processing message: {env}")
-            # further decoding
+        # print("Received message:", env)
 
-    def listen_forever(self):
+        return env
+
+    def handle_inv(self, inv):
+        getdata_items = [(type, hash) for type, hash in inv.items if type in [1, 2]]  # 1 for TX, 2 for Block
+        if getdata_items:
+            getdata = GetDataMessage(getdata_items)
+            self.send(getdata)
+
+    def listen_message(self):
+        version = VersionMessage(
+            timestamp=0,
+            nonce=b'\x00' * 8,
+            user_agent=b'/programmingbitcoin:0.1/',
+        )
+        self.send(version)  # Send a version message
         try:
+            # Call the appropriate handler function according to the message type
             while True:
-                message = self.read()
-                # Optionally process and print the message based on its type
-                self.process_message(message)
+                env = NetworkEnvelope.decode(self.stream, net=self.net)  # Reading a message from the network
+                command = env.command
+
+                # respond to Version with VerAck
+                if command == VersionMessage.command:
+                    self.send(VerAckMessage())  # Send verack message
+
+                    print("Connection established!")
+
+                elif env.command == PingMessage.command:
+                    self.send(PongMessage(env.payload))  # Responding to Ping Messages
+                    print("Sent Pong")
+
+                elif env.command == InvMessage.command:
+                    inv = InvMessage.parse(env.stream()) # Parsing Inv messages
+                    print("Received Inventory: ", inv)
+                    self.handle_inv(inv)
+
+                elif env.command == b'tx':
+                    tx = TxMessage.parse(env.stream())
+                    tx.print_TXreadable()  # Parsing Tx Messages
+
+                elif env.command == b'block':
+                    block = BlockMessage.parse(env.stream())
+                    block.print_blockReadable()  # Parsing Block Messages
+
         except Exception as e:
             print(f"Stopped listening due to error: {e}")
         finally:
             self.socket.close()
             print("Connection closed.")
 
-    def wait_for(self, *message_classes):
-        command = None
-        command_to_class = {m.command: m for m in message_classes}
-
-        # loop until one of the desired commands is encountered
-        while command not in command_to_class:
-            env = self.read()
-            command = env.command
-
-            # respond to Version with VerAck
-            if command == VersionMessage.command:
-                self.send(VerAckMessage())
-
-            # respond to Ping with Pong
-            elif command == PingMessage.command:
-                self.send(PongMessage(env.payload))
-
-        # return the parsed message
-        print(command_to_class[command].decode(env.stream()))
-        return command_to_class[command].decode(env.stream())
-
-    def handshake(self):
-        version = VersionMessage(
-            timestamp=0,
-            nonce=b'\x00' * 8,
-            user_agent=b'/programmingbitcoin:0.1/',
-        )
-        print(version)
-        self.send(version)
-        self.wait_for(VersionMessage)
-        self.wait_for(VerAckMessage)
-        self.send(VerAckMessage())
-        print("Connection established")
-        self.listen_forever()
-
     def close(self):
         self.socket.close()
-

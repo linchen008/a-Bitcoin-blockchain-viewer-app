@@ -1,8 +1,4 @@
-import hashlib
 import socket
-import struct
-from dataclasses import dataclass, field
-from typing import List
 
 from Handshake import NetworkEnvelope, PingMessage, PongMessage, VersionMessage, VerAckMessage
 from MessageHandler import GetDataMessage, InvMessage, TxMessage, BlockMessage

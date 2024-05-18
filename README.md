@@ -25,26 +25,28 @@ Run the test function
    Bits: 4294770688 (Difficulty: 0.0)
    Nonce: 2936209407
    Number of Transactions: 170
-   Transaction Information:
+Transaction Information:
    Version: 7
    Locktime: 420741142
    Number of Inputs: 0
    Number of Outputs: 0
    Transaction Inputs:
    Transaction Outputs:
-   Transaction Information:
+   Total Output Value: 0.54907064 BTC
+Transaction Information:
    Version: 2839568471
    Locktime: 0
    Number of Inputs: 235
    Number of Outputs: 0
+   Total Output Value: 0.54907064 BTC
    Transaction Inputs:
-   Input 1:
-   Previous Output Hash: 7601191df616bb9748bacd92b721a07b020000000000160014035a32e3e1d73f
-   Output Index: 3973306363
-   ScriptSig: c3a4a532a16fe4d70000000000fdffffff0200000000000000000a6a5d0714baa···
-   Input 9:
-   Previous Output Hash: 01f10b000000000000160014cdccb1311df1a421611dec5ac9ebc0a2ba219ac7
-   Output Index: 0
+     Input 1:
+      Previous Output Hash: 7601191df616bb9748bacd92b721a07b020000000000160014035a32e3e1d73f
+      Output Index: 3973306363
+      ScriptSig: c3a4a532a16fe4d70000000000fdffffff0200000000000000000a6a5d0714baa···
+     Input 9:
+      Previous Output Hash: 01f10b000000000000160014cdccb1311df1a421611dec5ac9ebc0a2ba219ac7
+      Output Index: 0
 ============================== 1 passed in 0.10s ===============================
 ```
 ## Output Example
@@ -61,22 +63,23 @@ Received feefilter message: e803000000000000
 Received Inventory:  InvMessage(items=[(1, b'\xa7···f\x1cD\xf~')], command=b'inv')
 Received tx message: [0100000001a7a81d4d8c0644ac1fb127a807d8ed97e35adb93f389dc377eb11d17f50ea5f3bf0000···]
 Transaction Information:
-   Version: 1
+  Version: 2
   Locktime: 0
   Number of Inputs: 1
-  Number of Outputs: 1
+  Number of Outputs: 2
+  Total Output Value: 0.01094785 BTC
   Transaction Inputs:
     Input 1:
-      Previous Output Hash: a7a81d4d8c0644ac1fb127a807d8ed97e35adb93f389dc377eb11d17f50ea5f3
-      Output Index: 191
-      ScriptSig: 483045022100d62d4c53deea9ca4466d7a853518f478d06688ecc46d62···
+      Previous Output Hash: 6eb9c7438fe5cf86c6edf17005e2b7ea96cdb15adb9e4144411305fc5b6fc16c
+      Output Index: 0
+      ScriptSig: 
   Transaction Outputs:
     Output 1:
-      Value: 14947 Satoshis
-      ScriptPubKey: 00146d0f77fc5d049b51a5de3fd47b1c1abda711e3ae
+      Value: 49243 Satoshis (0.00049243 BTC)
+      ScriptPubKey: 76a9149298be38e624dac4b0f159ae47f3eeedc04f381788ac
     Output 2:
-      Value: 60659 Satoshis
-      ScriptPubKey: 00142042e9b4bf795baea1feed294d98b34c709c9bba
+      Value: 1045542 Satoshis (0.01045542 BTC)
+      ScriptPubKey: 00147423a21054fcbb629602cfc94a1bd4c15e41fc57
  [Block ~~~ Showed in the Test  ~~~]
 ```
 ## Troubleshooting

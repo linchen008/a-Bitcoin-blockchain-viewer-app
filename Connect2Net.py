@@ -6,8 +6,6 @@ from typing import List
 
 from Handshake import NetworkEnvelope, PingMessage, PongMessage, VersionMessage, VerAckMessage
 from MessageHandler import GetDataMessage, InvMessage, TxMessage, BlockMessage
-# from MessageHandler import GetDataMessage, InvMessage, TxMessage, BlockMessage
-from Utils import encode_varint, decode_varint, encode_int
 
 
 class SimpleNode:
@@ -73,11 +71,11 @@ class SimpleNode:
 
                 elif env.command == b'tx':
                     tx = TxMessage.parse(env.stream())
-                    tx.print_TXreadable()  # Parsing Tx Messages
+                    TxMessage.print_TXreadable(tx)  # Parsing Tx Messages
 
                 elif env.command == b'block':
                     block = BlockMessage.parse(env.stream())
-                    block.print_blockReadable()  # Parsing Block Messages
+                    BlockMessage.print_blockReadable(block)  # Parsing Block Messages
 
         except Exception as e:
             print(f"Stopped listening due to error: {e}")

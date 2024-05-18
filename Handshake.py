@@ -3,7 +3,6 @@ Classes/utils for connecting to Bitcoin nodes
 Protocol Documentation: https://en.bitcoin.it/wiki/Protocol_documentation
 """
 import hashlib
-import os
 from dataclasses import dataclass, field
 
 from io import BytesIO
